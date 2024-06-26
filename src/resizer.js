@@ -6,13 +6,15 @@ const ImageResizer = () => {
   const [resizedImages, setResizedImages] = useState([]);
   const [alertMessage, setAlertMessage] = useState('');
   const [loading, setLoading] = useState(false);
+  const [width, setWidth] = useState(35); // Default width
+  const [height, setHeight] = useState(30); // Default height
 
   const resizeFile = (file) =>
     new Promise((resolve, reject) => {
       Resizer.imageFileResizer(
         file,
-        35,
-        30,
+        width, // Use user-defined width
+        height, // Use user-defined height
         'PNG',
         100,
         0,
@@ -69,7 +71,7 @@ const ImageResizer = () => {
       setAlertMessage('Failed to resize/upload one or more images.');
     } finally {
       setLoading(false);
-      alert('다운로드가 완료되었습니다.')
+      alert('다운로드가 완료되었습니다.');
     }
   };
 
@@ -81,12 +83,23 @@ const ImageResizer = () => {
     <div style={{ marginLeft: '20px' }}>
       {loading && <img src={loadingImg} alt="로딩 중..." />}
       {alertMessage && <div className="alert alert-danger">{alertMessage}</div>}
-      <div style={{ textAlign: 'left' }}>
+      <div style={{ textAlign: 'left'}}>
         사용방법:<br />
-        1. 파일 선택 → 이미지 선택 (다중 선택 가능)<br />
-        2. 자동으로 다운로드 진행됨. 크롬에서 여러 파일 다운로드 '허용' <br />
-        3. 크롬에서는 동시 다운로드가 10개까지만 지원하므로, 9개 다운 + 5초 휴식 패턴으로 반복됨
+        1. 가로 세로 크기 입력<br/>
+        2. 파일 선택 → 이미지 선택 (다중 선택 가능)<br />
+        3. 자동으로 다운로드 진행됨. 크롬에서 여러 파일 다운로드 '허용' <br />
+        <span style={{fontSize:'14px'}}>(최초 실행시 여러 파일 다운로드 미허용이므로, 2개를 먼저 업로드하여 허용한 후 전체 업로드 할 것) </span><br/>
+        4. 크롬에서는 동시 다운로드가 10개까지만 지원하므로, 9개 다운 + 5초 휴식 패턴으로 반복됨<br />
         <br />
+        <br />
+        <label>
+          가로(px):
+          <input type="number" value={width} onChange={(e) => setWidth(parseInt(e.target.value))} />
+        </label>
+        <label style={{ marginLeft: '10px' }}>
+          세로(px):
+          <input type="number" value={height} onChange={(e) => setHeight(parseInt(e.target.value))} />
+        </label>
       </div>
       <input type="file" multiple onChange={handleFileChange} />
       {resizedImages.length > 0 && (
