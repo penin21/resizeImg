@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import Resizer from 'react-image-file-resizer';
+import Resizer from "@meghoshpritam/react-image-file-resizer";
 import loadingImg from './loading.gif';
 
 const ImageResizer = () => {
@@ -11,14 +11,15 @@ const ImageResizer = () => {
 
   const resizeFile = (file) =>
     new Promise((resolve, reject) => {
-      Resizer.imageFileResizer(
-        file,
-        width, // Use user-defined width
-        height, // Use user-defined height
-        'PNG',
-        100,
-        0,
-        (uri) => {
+      Resizer.imageFileResizer({
+      file,
+      maxWidth: width,
+      maxHeight: height,
+      compressFormat: "JPEG",
+      quality: 100,
+      rotation: 0,
+      keepAspectRatio: false,
+      responseUriFunc: (uri) => {
           fetch(uri)
             .then((res) => res.blob())
             .then((blob) => {
@@ -28,8 +29,8 @@ const ImageResizer = () => {
               reject(error);
             });
         },
-        'base64'
-      );
+        outputType: 'base64'
+    });
     });
 
   const handleFileChange = async (event) => {
